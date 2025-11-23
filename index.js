@@ -64,7 +64,14 @@ module.exports = app;
 
 // Start server only when this file is executed directly
 if (require.main === module) {
-    app.listen(PORT, () => {
+    app.listen(PORT, async () => {
         console.log(`Server is running on port ${PORT}`);
+        try {
+            const axios = require('axios');
+            const response = await axios.post(`http://localhost:${PORT}/sync-products`);
+            console.log('✅ Auto sync succeeded:', response.data);
+        } catch (err) {
+            console.error('⚠️ Auto sync failed:', err.response?.data || err.message);
+        }
     });
 }
