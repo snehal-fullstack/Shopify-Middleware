@@ -32,7 +32,7 @@ app.use(limiter);
 app.use(shopifyMiddleware);
 
 // ---------- Routes ----------
-app.use('/sync-products', syncProductsRoute);
+app.use('/', syncProductsRoute);
 
 // Base health check route
 app.get('/', (req, res) => {

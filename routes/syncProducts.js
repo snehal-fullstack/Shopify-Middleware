@@ -50,7 +50,7 @@ const PRODUCTS_QUERY = `
 `;
 
 // POST /sync-products - Fetch and store products
-router.post('/', async (req, res) => {
+router.post('/sync', async (req, res) => {
   try {
     const { shopName, accessToken, apiVersion } = req.shopifyConfig;
 
@@ -118,7 +118,7 @@ router.post('/', async (req, res) => {
 });
 
 // GET /sync-products - Retrieve stored products
-router.get('/', async (req, res) => {
+router.get('/products', async (req, res) => {
   try {
     const dataPath = path.join(__dirname, '../data/products.json');
     const data = await fs.readFile(dataPath, 'utf-8');
