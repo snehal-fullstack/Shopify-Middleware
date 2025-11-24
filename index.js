@@ -65,10 +65,24 @@ module.exports = app;
 // Start server only when this file is executed directly
 if (require.main === module) {
     app.listen(PORT, async () => {
-        console.log(`Server is running on port ${PORT}`);
+        // Fallback to localhost if HOST is not set, ensuring a valid URL for logging/auto-sync
+        const displayHost = process.env.HOST || `http://localhost:${PORT}`;
+        console.log(`Server is running on ${displayHost}`);
+
         try {
             const axios = require('axios');
-            const response = await axios.post(`http://localhost:${PORT}/sync-products`);
+            // Use the configured HOST if available, otherwise default to local IPv4 loopback
+            // Ensure the URL has a protocol
+            let syncUrl = process.env.HOST
+                ? `${process.env.HOST}/sync-products`
+                : `http://127.0.0.1:${PORT}/sync-products`;
+
+            // If HOST is just an IP or hostname without protocol, prepend http://
+            if (!syncUrl.startsWith('http')) {
+                syncUrl = `http://${syncUrl}`;
+            }
+
+            const response = await axios.post(syncUrl);
             console.log('✅ Auto sync succeeded:', response.data);
         } catch (err) {
             console.error('⚠️ Auto sync failed:', err.response?.data || err.message);
